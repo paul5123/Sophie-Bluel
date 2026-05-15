@@ -30,6 +30,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	background-color: #FFFEF8;
 }
 ol, ul {
 	list-style: none;
@@ -186,6 +187,7 @@ footer nav ul {
 	margin: 2em
 }
 
+/* Ajout du style des filtres*/
 .filtre-bouton {
 	display: flex;
 	border: 1px solid #1D6154;
@@ -216,3 +218,74 @@ footer nav ul {
 	gap: 10px;
 	margin-bottom: 30px;
 }
+/* */
+header a {
+	color: black;
+	text-decoration: none;
+}
+
+.gras {
+	font-weight: bold;
+}
+/***Page log in ***/
+/* Style du formulaire de connexion*/
+#login {
+	width: 33.3%;
+margin: auto;
+}
+#login> * {
+	text-align: center;
+
+}
+#login h2{
+	margin-top: 100px;
+	margin-bottom: 36px;
+	font-weight: bold;
+}
+#login form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+#login input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+#login label {
+	margin: 2em 0 1em 0;
+}
+#login textarea {
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+#login input[type="submit"] {
+	height: 36px;
+	font-size: 14px;
+}
+
+#login a {
+	display: flex;
+	justify-content: center ;
+	color: black;
+}
+
+/* Style du footer "Mentions Légales" */
+.footer-login {
+	margin-top:379px ;
+	
+}
+
+.footer-login ul {
+	margin: 0;
+	margin-bottom: 20px;
+}
+
+.footer-login li {
+	padding: 0;
+}
+
