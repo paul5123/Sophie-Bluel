@@ -268,6 +268,10 @@ margin: auto;
 	font-size: 14px;
 }
 
+#login input[type="submit"]:hover {
+	cursor: pointer;
+}
+
 #login a {
 	display: flex;
 	justify-content: center ;
