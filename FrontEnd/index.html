@@ -9,22 +9,33 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="script.js" defer></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<script src="index.js" defer></script>
 </head>
 <body>
+<div class="edition"  id="edition-header">
+	<a href="#">
+		<i class="fa-regular fa-pen-to-square"></i>
+		Mode édition
+	</a>
+</div>
+<div id="body-page">
 <header>
+	<div>
+	<div class="div-header">
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
 			<li><a href="#" class="gras">projets</a></li>
 			<li><a href="#">contact</a></li>
-			<li><a href="login.html">login</a></li>
+			<li id="edition-login"><a href="login.html">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
+	</div>
 </header>
 <main>
-	<section id="introduction">
+	<section  id="introduction">
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="">
 		</figure>
@@ -36,7 +47,13 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<div id="filtres-Edition">
+			<h2>Mes Projets</h2>
+			<a class="edition"  href="#">
+			<i class="fa-regular fa-pen-to-square"></i>
+			Mode édition
+			</a>
+		</div>
 		<div class="gallery">
 		</div>
 	</section>
@@ -62,5 +79,6 @@
 		</ul>
 	</nav>
 </footer>
+</div>
 </body>
 </html>
