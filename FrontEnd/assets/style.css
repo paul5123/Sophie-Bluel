@@ -451,14 +451,10 @@ input[type="submit"].modal-submit{
 	font-size: 26px ;
 }
 .ajouter-photo {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
 	background-color:#E8F1F6 ;
-	padding-top: 22.5px;
-	padding-bottom: 19px;
-	gap:6px;
 	border-radius: 3px;	
+	width: 420px;
+  	height: 169px;
 }
 
 .ajouter-photo i {
@@ -471,6 +467,13 @@ input[type="submit"].modal-submit{
 }
 #fichier {
   display: none;
+}
+
+.pre-preview {
+	flex-direction: column;
+	align-items: center;
+	background-color:#E8F1F6 ;
+	gap:6px;
 }
 
 .bouton-fichier {
@@ -499,6 +502,15 @@ input[type="submit"].modal-submit{
 }
 
 
-input[type="submit"].changement-modal2 {
+input[type="submit"].bouton-modal2 {
 	background-color: #A7A7A7;
+}
+.pre-preview {
+	padding-top: 22.5px;
+	padding-bottom: 19px;
+}
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }

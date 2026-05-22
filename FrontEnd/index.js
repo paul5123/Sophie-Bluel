@@ -16,7 +16,7 @@ function afficherGalerie(travaux) {
   let gallery = document.querySelector(".gallery");
   travaux.forEach(function (objet) {
     let html = `
-            <figure class="projet">
+            <figure class="projet" data-id="${objet.id}">
 		        <img src="${objet.imageUrl}" alt="${objet.title}">
 		        <figcaption> ${objet.title} </figcaption>
 	        </figure>
@@ -30,6 +30,7 @@ function afficherGalerie(travaux) {
 async function affichageTravaux() {
   const travaux = await recupererTravaux();
   afficherGalerie(travaux);
+   console.log(travaux);
 }
 
 /*Affichage des boutons filtres "categories" */
@@ -65,7 +66,7 @@ async function affichageCategories() {
 async function filtreBouton() {
   const travaux = await recupererTravaux();
   const bouton = document.querySelectorAll(".filtre-bouton");
-
+   
   bouton.forEach(function (bouton) {
     bouton.addEventListener("click", function () {
       const idBouton = Number(bouton.dataset.categoryId);
@@ -108,26 +109,26 @@ function affihageModale() {
   const boutonModifier = document.querySelectorAll(".edition-bouton");
   const modale = document.querySelector(".modal");
   const croix = document.querySelector(".modal-croix");
-  const boutonAjoutPhoto = document.querySelector(".changement-modal1");
-  const boutonValider = document.querySelector(".changement-modal2");
+  const boutonAjoutPhoto = document.querySelector(".bouton-modal1");
+  const boutonValider = document.querySelector(".bouton-modal2");
   const modale1 = document.querySelector(".modal1");
   const modale2 = document.querySelector(".modal2");
   const flecheRetour = document.querySelector(".modal-retour");
-/* Fonction qui affiche la modale "gallerie" et cache "Ajout photo"*/
+  /* Fonction qui affiche la modale "gallerie" et cache "Ajout photo"*/
   function afficherGalerie() {
     modale1.style.display = "block";
     modale2.style.display = "none";
     boutonAjoutPhoto.style.display = "block";
     boutonValider.style.display = "none";
-}
-/* Fonction qui affiche la modale "Ajout photo" et cache "gallerie"*/
-function afficherAjoutPhoto() {
+  }
+  /* Fonction qui affiche la modale "Ajout photo" et cache "gallerie"*/
+  function afficherAjoutPhoto() {
     modale1.style.display = "none";
     modale2.style.display = "block";
     boutonAjoutPhoto.style.display = "none";
     boutonValider.style.display = "block";
-    boutonValider
-}
+    boutonValider;
+  }
   /* Affichage du moodal au clique de "modifier" */
   boutonModifier.forEach(function (bouton) {
     bouton.addEventListener("click", function () {
@@ -159,10 +160,10 @@ function afficherGalerieModale(travaux) {
   let modalGallery = document.querySelector(".modal-gallery");
   travaux.forEach(function (objet) {
     let html = `
-            <figure class="projet">
+            <figure class="projet projet-modal" data-id="${objet.id}">
 		        <img src="${objet.imageUrl}" alt="${objet.title}">
             <button class="modal-poubelle">
-        		<i class="fa-solid fa-trash-can"></i>
+        		<i class="fa-solid fa-trash-can" data-id="${objet.id}"></i>
    				</button>	
 	        </figure>
         `;
@@ -176,6 +177,87 @@ async function affichageTravauxModale() {
   afficherGalerieModale(travaux);
 }
 
+/* Supression de l'image de la gallerie a partir du modale quand on clique sur la poubelle*/
+async function supressionImageGallerie() {
+  const poubelles = document.querySelectorAll(".projet-modal i");
+  const token = localStorage.getItem("token");
+  poubelles.forEach(function (poubelle) {
+    poubelle.addEventListener("click", async function (event) {
+      const id = event.target.dataset.id;
+      console.log(id);
+      const reponse = await fetch(`http://localhost:5678/api/works/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (reponse.ok) {
+        document
+          .querySelectorAll(`.projet[data-id="${id}"]`)
+          .forEach(function (element) {
+            element.remove();
+          });
+      }
+    });
+  });
+}
+
+/*Affichage de la preview  */
+function afficherPreview() {
+  const imageInput = document.querySelector("#fichier");
+  imageInput.addEventListener("change", function () {
+    const image = imageInput.files[0];
+    if (!image) {
+      alert("Veuillez choisir une image.");
+      return;
+    } else {
+      const prePreview = document.querySelector(".pre-preview");
+      const preview = document.querySelector(".preview");
+      const bouton = document.querySelector(".bouton-modal2");
+      prePreview.style.display = "none";
+      preview.style.display = "flex";
+      preview.src = URL.createObjectURL(image);
+      bouton.style.backgroundColor ="#1D6154";
+    }
+  });
+}
+
+/* Integration de la liste des categories dans le modale "Ajout photo"*/ 
+async function affichageCategorieModale() {
+  const categories = await recupererCategories();
+  const categorieDeroulant = document.getElementById("category");
+  categories.forEach(function(objet) {
+  const html = `<option value="${objet.id}">${objet.name}</option>`;
+  categorieDeroulant.innerHTML += html;
+  })
+}
+
+
+/* Fonction qui permet d'ajouter une image dans la gallerie a partir du modale*/
+function ajoutProjetDansGallerie() {
+const boutonValider = document.querySelector(".bouton-modal2");
+const titre = document.querySelector("#title");
+const categorie = document.querySelector("#category");
+boutonValider.addEventListener("click", function() {
+const image = imageInput.files[0];
+if (!image || !titre.value || !categorie.value ) {
+  alert("Veuillez choisir une image, un titre et une catégorie.");
+  return;
+}else {
+const prePreview = document.querySelector(".pre-preview");
+const preview = document.querySelector(".preview");
+prePreview.style.display = "flex";
+preview.style.display = "none";
+/*fetch*/
+imageInput.value ="";
+titre.value="";
+fermerModale();
+}
+})
+}
+
+
+
 /*** Fonction qui appel toute les fonction du fichiers en async ***/
 async function fonctionement() {
   await affichageTravaux();
@@ -183,7 +265,11 @@ async function fonctionement() {
   if (token) {
     affichageModeEdition();
     affihageModale();
-    affichageTravauxModale();
+    await affichageTravauxModale();
+    supressionImageGallerie();
+    afficherPreview();
+    await affichageCategorieModale();
+    ajoutProjetDansGallerie();
   } else {
     await affichageCategories();
     await filtreBouton();
