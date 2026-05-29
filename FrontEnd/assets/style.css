@@ -281,6 +281,11 @@ margin: auto;
 	color: black;
 }
 
+.erreurP {
+	color: red;
+	margin: 20px 0;
+}
+
 /* Style du footer "Mentions Légales" */
 .footer-login {
 	margin-top:379px ;
@@ -347,7 +352,7 @@ nav img {
 
 }
 
-.modal-wrapper {
+.modal-gabarit {
 	position: relative;
 	overflow: auto;
 	width: 420px;

@@ -45,6 +45,7 @@ async function affichageCategories() {
   let portfolio = document.getElementById("portfolio");
   let gallery = document.querySelector(".gallery");
   let div = document.createElement("div");
+
   div.classList.add("divfiltre-bouton");
   portfolio.insertBefore(div, gallery);
 
@@ -73,7 +74,7 @@ async function filtreBouton() {
   const bouton = document.querySelectorAll(".filtre-bouton");
 
   bouton.forEach(function (bouton) {
-    /*Si il y a un clique sur on bouton filtre*/
+    /*Si il y a un clique sur un bouton filtre*/
     bouton.addEventListener("click", function () {
       /*On recupere  le data-id du bouton filtre et on le tansforme en number (string avant)*/
       const idBouton = Number(bouton.dataset.categoryId);
@@ -98,25 +99,25 @@ async function filtreBouton() {
 /***----------------------------------------------------
 Mode edition
 -----------------------------------------------------***/
+const loginAffichage = document.querySelector("#edition-login a");
 
 /**Affichage du mode edition lorsque l'on est connecté**/
 function affichageModeEdition() {
   const classEdition = document.querySelectorAll(".edition");
+  const filtresEditionTitre = document.querySelector("#filtres-Edition h2");
+  const filtreEdition = document.querySelector("#filtres-Edition");
+
   classEdition.forEach(function (html) {
     html.style.display = "flex";
   });
-  const filtresEditionTitre = document.querySelector("#filtres-Edition h2");
   filtresEditionTitre.style.marginBottom = 0;
-  const filtreEdition = document.querySelector("#filtres-Edition");
   filtreEdition.style.marginBottom = "128px";
-  const loginAffichage = document.querySelector("#edition-login a");
   loginAffichage.innerText = "logout";
   loginAffichage.href = "#";
 }
 
 /**Desactivation du mode edition au clique du logout **/
 function desAffichageModeEdition() {
-  const loginAffichage = document.querySelector("#edition-login a");
   loginAffichage.addEventListener("click", function () {
     localStorage.removeItem("token");
     window.location.href = "index.html";
@@ -134,6 +135,14 @@ const modale1 = document.querySelector(".modal1");
 const modale2 = document.querySelector(".modal2");
 const flecheRetour = document.querySelector(".modal-retour");
 
+/**Fonction qui enleve le message d'erreur du formulaire "ajout photo"**/
+function enleverMessageErreur() {
+  const erreur = document.querySelector(".erreurP");
+  if (erreur) {
+    erreur.remove();
+  }
+}
+
 /***----------------------------------------------------
  Ouverture et fermeture du modale
 -----------------------------------------------------***/
@@ -149,6 +158,9 @@ boutonModifier.forEach(function (bouton) {
 
 /**Fonction qui ferme le modale **/
 function fermerModale() {
+  if (document.activeElement) {
+  document.activeElement.blur();
+  }
   modale.style.display = "none";
   modale.setAttribute("aria-hidden", "true");
 }
@@ -159,6 +171,7 @@ function evenementFermetureModale() {
   modale.addEventListener("click", function (event) {
     if (event.target === modale) {
       fermerModale();
+      enleverMessageErreur();
     }
   });
 }
@@ -173,6 +186,7 @@ function afficherModaleGalerie() {
   modale2.style.display = "none";
   boutonAjoutPhoto.style.display = "block";
   boutonValider.style.display = "none";
+  enleverMessageErreur();
 }
 /*Fonction qui affiche la modale "Ajout photo" et cache "gallerie"*/
 function afficherAjoutPhoto() {
@@ -181,6 +195,7 @@ function afficherAjoutPhoto() {
   boutonAjoutPhoto.style.display = "none";
   boutonValider.style.display = "block";
   boutonValider;
+  enleverMessageErreur();
 }
 
 /*Passage au modal2 au clique du bouton "Ajouter une photo"*/
@@ -205,7 +220,7 @@ function afficherGalerieModale(travaux) {
     let html = `
             <figure class="projet projet-modal" data-id="${objet.id}">
 		        <img src="${objet.imageUrl}" alt="${objet.title}">
-            <button class="modal-poubelle">
+            <button class="modal-poubelle" data-id="${objet.id}">
         		<i class="fa-solid fa-trash-can" data-id="${objet.id}"></i>
    				</button>	
 	        </figure>
@@ -214,18 +229,16 @@ function afficherGalerieModale(travaux) {
   });
 }
 
-
 /***----------------------------------------------------
  Fonctionnalité du modale /Supression gallerie\
 -----------------------------------------------------***/
 
 /*Supression de l'image de la gallerie a partir du modale quand on clique sur la poubelle*/
 async function supressionImageGallerie() {
-  const poubelles = document.querySelectorAll(".projet-modal i");
+  const poubelles = document.querySelectorAll(".modal-poubelle");
   poubelles.forEach(function (poubelle) {
     poubelle.addEventListener("click", async function (event) {
       const id = event.target.dataset.id;
-      console.log(id);
       const reponse = await fetch(`http://localhost:5678/api/works/${id}`, {
         method: "DELETE",
         headers: {
@@ -243,14 +256,13 @@ async function supressionImageGallerie() {
   });
 }
 
-
 /***----------------------------------------------------
  Fonctionnalité du modale /Ajout gallerie\
 -----------------------------------------------------***/
-
+const imageInput = document.querySelector("#fichier");
 /*Affichage de la preview  */
+
 function afficherPreview() {
-  const imageInput = document.querySelector("#fichier");
   imageInput.addEventListener("change", function () {
     const image = imageInput.files[0];
     if (!image) {
@@ -282,19 +294,50 @@ async function affichageCategorieModale() {
 function ajoutProjetDansGallerie() {
   const titre = document.querySelector("#title");
   const categorie = document.querySelector("#category");
-  boutonValider.addEventListener("click", function () {
+
+  boutonValider.addEventListener("click", async function () {
     const image = imageInput.files[0];
     if (!image || !titre.value || !categorie.value) {
-      alert("Veuillez choisir une image, un titre et une catégorie.");
-      return;
+    if (document.querySelector(".erreurP")) {
+    return;
+    } else { 
+    const messageErreur = document.createElement("p");
+    const selectionModal2 =document.querySelector(".modal2")
+    messageErreur.classList.add("erreurP");
+    messageErreur.innerText ="Le formulaire n’est pas correctement rempli.";
+    selectionModal2.appendChild(messageErreur);
+    }
     } else {
-      const prePreview = document.querySelector(".pre-preview");
-      const preview = document.querySelector(".preview");
-      prePreview.style.display = "flex";
-      preview.style.display = "none";
-      /*fetch*/
-      imageInput.value = "";
-      titre.value = "";
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("title", titre.value);
+      formData.append("category", categorie.value);
+
+      enleverMessageErreur();
+      const reponse = await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (reponse.ok) {
+        const prePreview = document.querySelector(".pre-preview");
+        const preview = document.querySelector(".preview");
+        document.querySelector(".gallery").innerHTML = "";
+        document.querySelector(".modal-gallery").innerHTML = "";
+        await affichageTravaux();
+        await affichageTravauxModale();
+        supressionImageGallerie();
+        prePreview.style.display = "flex";
+        preview.style.display = "none";
+        categorie.value = "";
+        imageInput.value = "";
+        titre.value = "";
+      } else {
+        alert("Erreur lors de l'ajout du projet.");
+      }
     }
   });
 }
@@ -304,7 +347,8 @@ Fonction qui appel toute les fonction du fichiers en async
 -----------------------------------------------------***/
 async function fonctionement() {
   await affichageTravaux(); /*Affichage par default */
-  if (token) {/*Si le token contient une valeur considérée comme vraie => on charge le mode administrateur*/
+  if (token) {
+    /*Si le token contient une valeur considérée comme vraie => on charge le mode administrateur*/
     affichageModeEdition();
     desAffichageModeEdition();
     evenementFermetureModale();
@@ -313,7 +357,8 @@ async function fonctionement() {
     afficherPreview();
     await affichageCategorieModale();
     ajoutProjetDansGallerie();
-  } else {/*=> Sinon on charge le mode utilisateur par default*/
+  } else {
+    /*=> Sinon on charge le mode utilisateur par default*/
     await affichageCategories();
     await filtreBouton();
   }
