@@ -356,8 +356,8 @@ nav img {
 	position: relative;
 	overflow: auto;
 	width: 420px;
-	max-width: calc(100vh-20px);
-	max-height: calc(100vh-20px);
+	max-width: calc(100vh - 20px);
+	max-height: calc(100vh - 20px);
 	padding: 20px;
 	background-color: white;
 	padding: 65px 105px 41px;
